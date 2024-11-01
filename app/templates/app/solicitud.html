@@ -1,0 +1,100 @@
+{% extends 'app/base.html' %} 
+{% block contenido %}
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>SOLICITUD</title>
+</head>
+<!--HEADER-->
+<body class="index-page">
+  <main class="main">
+    <!-- Solicitud -->
+    <section id="solicitud" class="contact section">
+      <!-- TÍTULO -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>¿Problemas?</h2>
+        <p>Puedes enviar un correo, adjuntando los datos necesarios y una descripción de tu problema o hablarnos mediante los contactos disponibles.</p>
+      </div><!-- FIN TÍTULO -->
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+          <div class="col-lg-5">
+            <div class="info-wrap">
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
+                <i class="bi bi-geo-alt flex-shrink-0"></i>
+                <!-- Info -->
+                <div>
+                  <h3>Dirección</h3>
+                  <p>Av. San Martín 199, 2520000 Viña del Mar, Valparaíso</p>
+                </div>
+              </div><!-- Fin Info -->
+              <!-- Info -->
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
+                <i class="bi bi-telephone flex-shrink-0"></i>
+                <div>
+                  <h3>Llámanos</h3>
+                  <p>+569 8996 7853</p>
+                </div>
+              </div><!-- Fin Info -->
+              <!-- Info -->
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
+                <i class="bi bi-envelope flex-shrink-0"></i>
+                <div>
+                  <h3>Envíanos un correo a</h3>
+                  <p>lebellemar@resorthost.cl</p>
+                </div>
+              </div><!-- Fin Info -->
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-71.55981606915236!3d-33.01779042586443!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDAxJzA0LjAiUyA3McKwMzMnMzUuNyJX!5e0!3m2!1ses!2scl!4v1676961268712!5m2!1ses!2scl" frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            {% if form %}
+            <form method="post" class="" data-aos="fade-up" data-aos-delay="200" id="solicitudForm">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="id_asunto" class="form-label">Asunto</label>
+                <select name="asunto" class="form-control" required id="id_asunto">
+                  <option value="Reserva">Problemas con la reserva</option>
+                  <option value="Habitacion">Problemas con la habitación</option>
+                  <option value="Pago">Problemas con el pago</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="id_mensaje" class="form-label">Mensaje</label>
+                <textarea name="mensaje" class="form-control" required id="id_mensaje" rows="5" placeholder="Escribe tu mensaje aquí..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+            {% else %}
+              <p>No hay formulario disponible.</p>
+            {% endif %}
+          </div><!-- Formulario contacto -->
+        </div>
+      </div>
+    </section><!-- /Solicitud -->
+  </main>
+
+<!-- alerta confirmación  -->
+  <script>
+    document.getElementById('solicitudForm').addEventListener('submit', function(event) {
+      event.preventDefault(); 
+
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¿Estás seguro de que deseas enviar la solicitud?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, enviar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submit();
+        }
+      });
+    });
+  </script>
+</body>
+{% endblock %}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>base</title>
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- ESTILOS -->
+    <link href="{% static 'app/css/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/main.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div id="header" class="header dark-background d-flex flex-column">
+        <i class="header-toggle d-xl-none bi bi-list"></i>
+        <div class="profile-img">
+          <img src="{% static 'app/img/logo.png'%}" alt="" class="img-fluid rounded-circle">
+        </div>
+        <!--CON AUTENT-->
+        {% if user.is_authenticated %}
+        <a href="{% url 'index' %}" class="logo d-flex align-items-center justify-content-center">
+          <h1 class="sitename">Bienvenido {{ user.get_username }}</h1>
+        </a>
+        {% else %}
+        <!--SIN AUTENT-->
+        <a href="{% url 'index' %}" class="logo d-flex align-items-center justify-content-center">
+          <h1 class="sitename">Resort</h1>
+        </a>
+        {% endif %}
+        <!--END AUTENT-->
+        <div class="social-links text-center">
+          <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        </div>
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <!--ACC. ADMIN-->
+            {% if user.is_staff %}
+            <li class="dropdown"><a href="#"><i class="bi bi-person navicon"></i><span>Administración</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="{% url 'list_user' %}"><i class="bi bi-list-ul"></i> Listar usuarios</a></li>
+                <li><a href="{% url 'add_user' %}"><i class="bi bi-person-plus"></i> Crear usuarios</a></li>
+                <li><a href="{% url 'list_room' %}"><i class="bi bi-house-door"></i> Listar habitaciones</a></li>
+                <li><a href="{% url 'add_room' %}"><i class="bi bi-house-add"></i> Registrar habitaciones</a></li>
+                <li><a href="{% url 'list_soli' %}"><i class="bi bi-envelope-open"></i> Listar solicitudes</a></li>
+                <li><a href="{% url 'login' %}"><i class="bi bi-file-earmark-person-fill"></i> Administración</a></li>
+              </ul>
+            </li>            
+            {% endif %}
+            <!--CON AUTENT-->
+            {% if user.is_authenticated %}
+            <li class="dropdown"><a href="#"><i class="bi bi-person navicon"></i><span>Usuario</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li>
+                  <form action="{% url 'logout' %}" method="post" id="logoutForm">
+                    {% csrf_token %}
+                    <button type="submit" class="bi bi-person-fill-dash">Cerrar sesión</button>
+                  </form>
+                </li>
+                <li><a href="{% url 'perfil' %}"><i class="bi bi-person-lines-fill"></i> Perfil</a></li>
+                <li><a href="{% url 'my_soli' %}"><i class="bi bi-envelope"></i> Mis solicitudes</a></li>
+                <li><a href="{% url 'my_room' %}"><i class="bi bi-envelope"></i> Mis reservas</a></li>
+                
+              </ul>
+            </li>            
+            {% else %}
+            <!--SIN AUTENT-->
+            <li class="dropdown"><a href="#"><i class="bi bi-person navicon"></i><span>Cuenta</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="{% url 'registro' %}">Registro</a></li>
+                <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <!--END AUTENT-->
+            <li><a href="{% url 'index' %}" class="active"><i class="bi bi-house navicon"></i>Home</a></li>
+            {% if request.path == '/' %}
+            <li><a href="#habitacion"><i class="bi bi-images navicon"></i>Recomendados</a></li>
+            <li><a href="#nosotros"><i class="bi bi-file-earmark-text navicon"></i>Nosotros</a></li>
+            <li><a href="#servicios"><i class="bi bi-hdd-stack navicon"></i>Servicios</a></li>
+            {% endif %}
+        
+            <li><a href="{% url 'hospedaje' %}"><i class="bi bi-images navicon"></i>Habitaciones</a></li>
+            <li><a href="{% url 'solicitud' %}"><i class="bi bi-envelope navicon"></i>Contacto</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-envelope navicon"></i>Términos de uso.</a></li>
+            <li></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="contenido">
+        {% block contenido %} {% endblock contenido %}
+      </div>
+</body>
+
+<footer id="footer" class="footer position-relative light-background">
+    <div class="container">
+      <div class="copyright text-center ">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">Le Belle Mar</strong> <span>Todos los derechos reservados</span></p>
+      </div>
+      <div class="credits">
+        Designed by <a href="">Alan Zamorano & Matías Riquelme</a>
+      </div>
+    </div>
+</footer>
+<!--MODAL-->
+<section>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Términos de Uso y Condiciones Legales</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center profile-img">
+          <img src="{% static 'app/img/logo.png'%}" alt="" class="img-fluid rounded-circle" width="300" class="mb-4">
+        </div>
+        <section>
+          <div class="container-fluid">
+            <div class="container text-dark">
+              <h2 class="mb-3">1. Condiciones de Uso</h2>
+              <p>Las condiciones aquí citadas se aplican a todas las reservas realizadas en nuestro hotel, ubicado en Av. San Martín 199, 2520000 Viña del Mar, Valparaíso. Al realizar una reserva con nosotros, usted acepta estos términos y condiciones.</p>
+              
+              <h2 class="mb-3">2. Reservas y Pagos</h2>
+              <p>Las reservas pueden realizarse a través de nuestro sitio web, por teléfono o en persona. Se requiere un depósito del 50% para confirmar la reserva. El saldo restante se pagará al momento del check-in.</p>
+              
+              <h2 class="mb-3">3. Cancelaciones</h2>
+              <p>Las cancelaciones realizadas con al menos 48 horas de antelación recibirán un reembolso completo del depósito. Las cancelaciones realizadas con menos de 48 horas de antelación no serán reembolsadas.</p>
+              
+              <h2 class="mb-3">4. Política de No Show</h2>
+              <p>En caso de no presentarse en la fecha reservada sin notificación previa, se cargará el importe total de la reserva.</p>
+              
+              <h2 class="mb-3">5. Propiedad y Uso de Instalaciones</h2>
+              <p>El hotel se reserva el derecho de admisión y uso de sus instalaciones. Los huéspedes son responsables de cualquier daño causado durante su estancia y deberán cubrir los costos de reparación o reposición.</p>
+              
+              <h2 class="mb-3">6. Política de Privacidad</h2>
+              <p>Nos comprometemos a proteger la privacidad de nuestros huéspedes. La información personal recopilada durante el proceso de reserva será utilizada únicamente para la gestión de la misma y no será compartida con terceros.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</section>
+<!--END MODAL-->
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<!-- Preloader -->
+<div id="preloader"></div>
+<script src="{% static 'app/css/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'app/css/php-email-form/validate.js' %}"></script>  
+<script src="{% static 'app/css/aos/aos.js' %}"></script>
+
+<script src="{% static 'app/css/typed.js/typed.umd.js' %}"></script>
+<script src="{% static 'app/css/purecounter/purecounter_vanilla.js' %}"></script>
+<script src="{% static 'app/css/waypoints/noframework.waypoints.js' %}"></script>
+<script src="{% static 'app/css/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'app/css/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+<script src="{% static 'app/css/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'app/css/swiper/swiper-bundle.min.js' %}"></script>
+
+<script src="{% static 'app/js/main.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- alerta cierre de sesión -->
+<script>
+document.getElementById('logoutForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¿Realmente deseas cerrar sesión?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, cerrar sesión',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.submit(); 
+        }
+    });
+});
+</script>
+</html>

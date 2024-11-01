@@ -1,0 +1,276 @@
+{% extends 'app/base.html' %} 
+{% block contenido %}
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>INDEX</title>
+</head>
+<!--HEADER-->
+<body class="index-page">
+  <main class="main">
+    <div> <!--TÍTULO-->
+    <!-- Fondo y texto -->
+    <section id="index" class="hero section dark-background">
+      <img src="{% static 'app/img/bg.jpg'%}" alt="" data-aos="fade-in" class="">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <h2>Le belle mar</h2>
+        <p>Quiero ir <span class="typed" data-typed-items="a la playa., al bosque., a la montaña."></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+      </div>
+    </section><!-- Fondo y texto -->
+    </div> <!--SECCIONES-->
+
+    
+    <div style="margin-left: 1cm;"><!-- Sección alojamientos -->
+      <section id="habitacion" class="portfolio section light-background">
+        <!-- TÍTULO -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Habitaciones</h2>
+          <p>Variadas, de todos los tamaños, colores y entornos. Encuentra tu habitación favorita para tus vacaciones deseadas.</p>
+        </div><!-- FIN TÍTULO -->
+        <div class="container" data-aos="fade-up">
+          <div class="row">
+            <div class="col-12 mt-5">
+              <div class="row">
+                {% for habitacion in habitaciones %}
+                <div class="col-md-4 mb-4">
+                  <div class="card h-100">
+                    <div class="card-body text-center">
+                      <h5 class="card-title mb-3">{{ habitacion.num_hab }} - {{ habitacion.tipo_hab }}</h5>
+                      <p class="card-text">
+                        <strong>Precio por Noche:</strong> {{ habitacion.precio_noche }}<br>
+                        <strong>Descripción:</strong> {{ habitacion.descripcion }}<br>
+                        <strong>Disponibilidad:</strong> {{ habitacion.disponible }}
+                      </p>
+                      {% if habitacion.imagenes.exists %}
+                      <div id="carouselHospedaje{{ habitacion.id }}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                          {% for imagen in habitacion.imagenes.all %}
+                          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ imagen.imagen.url }}" alt="Imagen de {{ habitacion.num_hab }}" class="d-block w-100" style="max-height: 250px; object-fit: cover;">
+                          </div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                      {% else %}
+                      <p class="mt-2">No hay imágenes disponibles.</p>
+                      {% endif %}
+                    </div>
+                    <div class="card-footer text-center">
+                      <a href="{% url 'habitacion_detalle' habitacion.habitacion_id %}"  class="btn btn-info">Ver Detalles</a>
+                    </div>
+                  </div>
+                </div>
+                {% empty %}
+                <p>No hay habitaciones disponibles.</p>
+                {% endfor %}
+              </div>       
+            </div>
+          </div>
+        </div>
+      </section> <!-- /alojamientos -->
+      
+
+
+    <!-- nosotros -->
+    <section id="nosotros" class="contact section">
+      <!-- TITULO -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>¿Problemas?</h2>
+        <p>Puedes enviarnos un correo con los detalles o hablar directamente a nuestros contactos.</p>
+      </div><!-- FIN TÍTULO -->
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+          <div class="col-lg-5">
+            <div class="info-wrap">
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
+                <i class="bi bi-geo-alt flex-shrink-0"></i>
+                <!-- Info  -->
+                <div>
+                  <h3>Dirección</h3>
+                  <p>Av. San Martín 199, 2520000 Viña del Mar, Valparaíso</p>
+                </div>
+              </div><!-- Fin Info -->
+              <!-- Info -->
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
+                <i class="bi bi-telephone flex-shrink-0"></i>
+                <div>
+                  <h3>Llámanos</h3>
+                  <p>+569 8996 7853</p>
+                </div>
+              </div><!-- Fin Info -->
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
+                <i class="bi bi-envelope flex-shrink-0"></i>
+                <!--  Info -->
+                <div>
+                  <h3>Envíanos un correo a</h3>
+                  <p>lebellemar@resorthost.cl</p>
+                </div>
+              </div><!-- Fin Info -->
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-71.55981606915236!3d-33.01779042586443!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDAxJzA0LjAiUyA3McKwMzMnMzUuNyJX!5e0!3m2!1ses!2scl!4v1676961268712!5m2!1ses!2scl" frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+          </div>
+          <div class="col-lg-7 content">
+            <h2>Planifica tus vacaciones.</h2>
+            <p class="fst-italic py-3">
+              Disfruta de tus vacaciones en un entorno paradisíaco. Relájate, desconéctate y vive la mejor experiencia en nuestro resort.
+            </p>
+            <div class="row">
+              <div class="col-lg-6">
+                <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Fundación:</strong> <span>1 Mayo 1995</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Website:</strong> <span>www.lebellemar.cl</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Teléfono:</strong> <span>+569 8996 7853</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Ciudad:</strong> <span>Viña del Mar, Chile</span></li>
+                </ul>
+              </div>
+              <div class="col-lg-6">
+                <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Años de Experiencia:</strong> <span>30</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Categoría:</strong> <span>Resort de lujo</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>lebellemar@resorthost.cl</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Servicios:</strong> <span>Habitaciones, Restaurantes, Spa, Eventos</span></li>
+                </ul>
+              </div>
+            </div>
+            <p class="py-3">
+              Ofrecemos instalaciones de primera categoría, un servicio excepcional y una ubicación ideal para que tus vacaciones sean inolvidables. Confía en nosotros para unas vacaciones perfectas.
+            </p>
+          </div><!-- Formulario contacto -->
+        </div>
+      </div>
+    </section><!-- /nosotros -->
+    <!-- Estadísticas -->
+    <section id="stats" class="stats section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-emoji-smile"></i>
+              <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Clientes felices</strong></p>
+            </div>
+          </div><!-- Stats Item -->
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-journal-richtext"></i>
+              <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Reservas exitosas</strong></p>
+            </div>
+          </div><!-- Stats Item -->
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-clock-history"></i>
+              <span data-purecounter-start="0" data-purecounter-end="28" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Años de servicio</strong></p>
+            </div>
+          </div><!-- Stats Item -->
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-item">
+              <i class="bi bi-award"></i>
+              <span data-purecounter-start="0" data-purecounter-end="150" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Certificaciones</strong></p>
+            </div>
+          </div><!-- Stats Item -->
+        </div>
+      </div>
+    </section><!-- /Estadísticas -->
+    <!-- Servicios -->
+    <section id="servicios" class="services section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Nuestros servicios</h2>
+          <p>Descubre la amplia gama de servicios que ofrecemos para hacer de tu estancia una experiencia inolvidable.</p>
+        </div><!-- Fin Servicios -->
+
+        <div class="container">
+          <div class="row gy-4">
+            <!-- Spa & Wellness -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+              <div class="icon flex-shrink-0"><i class="bi bi-heart-pulse"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Spa & Wellness</a></h4>
+                <p class="description">Relájate en nuestro exclusivo spa con tratamientos y terapias diseñados para rejuvenecer cuerpo y mente.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Restaurante Gourmet -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="200">
+              <div class="icon flex-shrink-0"><i class="bi bi-cup-straw"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Restaurante Gourmet</a></h4>
+                <p class="description">Disfruta de una experiencia culinaria única con una fusión de cocina local e internacional.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Servicio de Concierge 24/7 -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="300">
+              <div class="icon flex-shrink-0"><i class="bi bi-people"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Concierge 24/7</a></h4>
+                <p class="description">Nuestro equipo está disponible las 24 horas para ayudarte con reservas, tours y cualquier necesidad especial.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Gimnasio Moderno -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="400">
+              <div class="icon flex-shrink-0"><i class="bi bi-bicycle"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Gimnasio Moderno</a></h4>
+                <p class="description">Mantente en forma durante tu estancia en nuestro gimnasio totalmente equipado.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Piscina Exterior -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="500">
+              <div class="icon flex-shrink-0"><i class="bi bi-droplet"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Piscina Exterior</a></h4>
+                <p class="description">Relájate en nuestra piscina al aire libre, rodeada de jardines y con vistas panorámicas.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Centro de Negocios -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="600">
+              <div class="icon flex-shrink-0"><i class="bi bi-laptop"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Centro de Negocios</a></h4>
+                <p class="description">Facilidades para tus necesidades profesionales, incluyendo salas de reuniones y servicios de impresión.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Servicio de Transporte -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="700">
+              <div class="icon flex-shrink-0"><i class="bi bi-car-front"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Servicio de Transporte</a></h4>
+                <p class="description">Transporte privado al aeropuerto y a destinos turísticos cercanos bajo petición.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Club Infantil -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="800">
+              <div class="icon flex-shrink-0"><i class="bi bi-balloon"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Club Infantil</a></h4>
+                <p class="description">Actividades supervisadas para niños, para que los padres puedan disfrutar de un tiempo libre.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+
+            <!-- Eventos y Banquetes -->
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="900">
+              <div class="icon flex-shrink-0"><i class="bi bi-calendar3-event"></i></div>
+              <div>
+                <h4 class="title"><a href="service-details.html" class="stretched-link">Eventos y Banquetes</a></h4>
+                <p class="description">Organización de eventos y banquetes con servicios de catering de alta calidad.</p>
+              </div>
+            </div><!-- Fin Item Servicio -->
+          </div>
+        </div>
+    </section><!-- /Servicios -->
+  </main>
+</body>
+
+</html>
+
+{% endblock %}

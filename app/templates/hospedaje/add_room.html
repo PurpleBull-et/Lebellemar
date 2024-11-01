@@ -1,0 +1,54 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Agregar Habitación | Hotel Le Belle Mar</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Fuentes y Estilos -->
+    <link rel="stylesheet" href="{% static 'app/css/accounts.css' %}" />
+</head>
+<body>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="wrap d-md-flex">
+                        <!-- Sección de Bienvenida con Imagen de Fondo -->
+                        <section id="" class="text-wrap p-4 p-lg-5 d-flex hero text w-100" data-aos="fade-up" data-aos-delay="100">
+                            <img src="{% static 'app/img/bg_login.jpg' %}" alt="" data-aos="fade-in" class="text w-100">
+                            <div class="container text w-100" data-aos="fade-up" data-aos-delay="100">
+                                <p>Ingrese los detalles de la nueva habitación para ofrecer a nuestros huéspedes la mejor experiencia en Hotel Le Belle Mar.</p>
+                            </div>
+                        </section><!-- Fondo y texto -->
+                        
+                        <!-- Sección de Agregar Habitación -->
+                        <div class="login-wrap p-4 p-md-5 signin-form" data-aos="fade-up" data-aos-delay="100">
+                            <div class="row justify-content-center py-md-5">
+                                <div class="col-lg-9">
+                                    <div class="social-wrap">
+                                        <h2 class="mb-4">Agregar Habitación</h2>
+                                        <h3 class="mb-3 text-center">Complete la información de la habitación</h3>
+                                    </div>
+                                    <form method="post" enctype="multipart/form-data" class="signin-form">
+                                        {% csrf_token %}
+                                        <h3>Habitación</h3>
+                                        {{ habitacion_form.as_p }}
+
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fin Sección de Agregar Habitación -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+{% endblock %}

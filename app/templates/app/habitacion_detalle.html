@@ -1,0 +1,83 @@
+{% extends 'app/base.html' %}
+
+{% block contenido %}
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Detalles de la Habitación</title>
+</head>
+<body class="index-page">
+  <main class="main">
+    <!-- Portfolio Details Section -->
+    <section id="portfolio-details" class="portfolio-details section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <h3>Información de la Habitación</h3>
+        <div class="row gy-4">
+          <div class="col-lg-8">
+            <div class="portfolio-details-slider swiper init-swiper">
+              <script type="application/json" class="swiper-config">
+                {
+                  "loop": true,
+                  "speed": 600,
+                  "autoplay": {
+                    "delay": 5000
+                  },
+                  "slidesPerView": "auto",
+                  "pagination": {
+                    "el": ".swiper-pagination",
+                    "type": "bullets",
+                    "clickable": true
+                  }
+                }
+              </script>
+              <div class="swiper-wrapper align-items-center">
+                {% if habitacion.imagenes.exists %}
+                {% for imagen in habitacion.imagenes.all %}
+                <div class="swiper-slide">
+                  <img src="{{ imagen.imagen.url }}" alt="Imagen de {{ habitacion.num_hab }}" class="d-block w-100" style="max-height: 500px; object-fit: cover;">
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="swiper-slide">
+                  <img src="{% static 'app/img/default.jpg' %}" alt="Imagen predeterminada" class="d-block w-100" style="max-height: 500px; object-fit: cover;">
+                </div>
+                {% endif %}
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="portfolio-info" data-aos="fade-up" data-aos-delay="200">
+              <ul>
+                <li><strong>Número</strong>: {{ habitacion.num_hab }}</li>
+                <li><strong>Tipo</strong>: {{ habitacion.tipo_hab }}</li>
+                <li><strong>Nombre</strong>: {{ habitacion.nombre }}</li>
+                <li><strong>Descripción</strong>: {{ habitacion.descripcion }}</li>
+                <li><strong>Disponibilidad</strong>: {{ habitacion.disponible }}</li>
+              </ul>
+
+              <form method="post">
+                {% csrf_token %}
+                <!-- Incluir el calendario que gestiona las fechas ocupadas y el cálculo -->
+                {% include 'app/calendar.html' %}
+    
+                <div id="totalAPagar" class="alert alert-info mt-4">
+                  <!-- Aquí se mostrará el total a pagar -->
+                </div>
+                <button type="submit" class="btn btn-success">Proceder al Pago</button>
+              </form>
+            </div>
+            <div class="portfolio-description" data-aos="fade-up" data-aos-delay="300">
+              <h2>Precio por Noche: {{ habitacion.precio_noche }}</h2>
+              <p>El precio por noche para la habitación {{ habitacion.num_hab }} es {{ habitacion.precio_noche }}. Aprovecha nuestra oferta especial y reserva tu estancia ahora para disfrutar de una experiencia inolvidable en nuestro hotel.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- /Portfolio Details Section -->
+
+  </main>
+</body>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+{% load crispy_forms_tags %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <h2 class="text-center mb-4">Habitaciones Registradas</h2>
+            <h5 class="text-center mb-4">Módulo de gestión de habitaciones</h5>
+            <p class="text-center mb-4">Consulte información de habitación; <span class="typed" data-typed-items="número, tipo, precio, nombre, descripción"></span></p>          
+            <section>
+                <div class="row">
+                    {% for habitacion in habitaciones %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-3">{{ habitacion.num_hab }} - {{ habitacion.tipo_hab }}</h5>
+                                <p class="card-text">
+                                    <strong>Precio por Noche:</strong> {{ habitacion.precio_noche }}<br>
+                                    <strong>Descripción:</strong> {{ habitacion.descripcion }}<br>
+                                    <strong>Disponibilidad:</strong> {{ habitacion.disponible }}
+                                </p>
+                                {% if habitacion.imagenes.exists %}
+                                <h6 class="mt-4">Imágenes disponibles: <b>{{habitacion.imagenes.count}}</b></h6>
+                                <div id="carouselHospedaje{{ habitacion.id }}" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        {% for imagen in habitacion.imagenes.all %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <img src="{{ imagen.imagen.url }}" alt="Imagen de {{ habitacion.num_hab }}" class="d-block w-100" style="max-height: 250px; object-fit: cover;">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- botones comentados
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselHospedaje{{ habitacion.id }}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselHospedaje{{ habitacion.id }}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>-->
+                                </div>
+                                {% else %}
+                                <p class="mt-2">No hay imágenes disponibles.</p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer text-center">
+                                <a href="{% url 'mod_room' habitacion.habitacion_id %}" class="btn btn-info">Ver Detalles</a>
+                                <form id="deleteForm-{{ habitacion.habitacion_id }}" action="{% url 'erase_room' habitacion.habitacion_id %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ habitacion.habitacion_id }}')">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No hay habitaciones disponibles.</p>
+                    {% endfor %}
+                </div>
+            </section>          
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDelete(habitacionId) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción. La habitación será eliminada permanentemente.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('deleteForm-' + habitacionId).submit();
+      }
+    });
+  }
+</script>
+{% endblock %}

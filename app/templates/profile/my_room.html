@@ -1,0 +1,75 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Mis Reservas | Hotel Le Belle Mar</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Fuentes y Estilos -->
+    <link rel="stylesheet" href="{% static 'app/css/accounts.css' %}" />
+</head>
+<body>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12 d-flex">
+                    <!-- Sección de Bienvenida con Imagen de Fondo -->
+                    <section id="" class="text-wrap p-4 p-lg-5 d-flex hero text w-50" data-aos="fade-up" data-aos-delay="100">
+                        <img src="{% static 'app/img/bg_login.jpg'%}" alt="" data-aos="fade-in" class="text w-100" style="height: 100%;">
+                        <div class="container text w-100" data-aos="fade-up" data-aos-delay="100">
+                            <p>Visualiza tus reservas y gestiona tu estadía en Hotel Le Belle Mar.</p>
+                        </div>
+                    </section>
+                    <!-- Sección de Reservas -->
+                    <div class="login-wrap p-4 p-md-5 w-50" data-aos="fade-up" data-aos-delay="100">
+                        <div class="row justify-content-center py-md-5">
+                            <div class="col-lg-12">
+                                <h2 class="text-center mb-4">Mis Reservas</h2>
+                                {% if reservas %}
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Habitación</th>
+                                            <th>Fecha Entrada</th>
+                                            <th>Fecha Salida</th>
+                                            <th>Precio Total</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for reserva in reservas %}
+                                        <tr>
+                                            <td>{{ reserva.reserva_id }}</td>
+                                            <td>{{ reserva.habitacion.num_hab }} ({{ reserva.habitacion.tipo_hab }})</td>
+                                            <td>{{ reserva.fecha_entrada|date:"d M Y" }}</td>
+                                            <td>{{ reserva.fecha_salida|date:"d M Y" }}</td>
+                                            <td>{{ reserva.precio_final|floatformat:2 }}</td>
+                                            <td>
+                                                <a href="{% url 'my_room_det' reserva.reserva_id %}" class="btn btn-info btn-sm">Ver Detalles</a>
+                                                <form method="post" action="{% url 'cancelar_reserva' reserva.reserva_id %}" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                                                </form>
+                                            </td>                                            
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <p class="text-center">No tienes reservas en este momento.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Sección de Reservas -->
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+{% endblock %}

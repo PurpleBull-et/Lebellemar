@@ -1,0 +1,69 @@
+{% extends 'app/base.html' %} 
+{% block contenido %}
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>HOSPEDAJE</title>
+</head>
+<body class="index-page">
+  <main class="main" >
+    <!-- Fondo y texto -->
+    <section id="hero" class="hero section dark-background">
+      <img src="{% static 'app/img/bg.jpg'%}" alt="" data-aos="fade-in" class="">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <h2>Reservaciones</h2>
+        <p>Quiero ir <span class="typed" data-typed-items="a la playa., al bosque., a la montaña."></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+      </div>
+    </section><!-- Fin Fondo y texto -->
+    <!-- Hospedajes disponibles -->
+    <section id="portfolio" class="portfolio section light-background">
+      <!-- TÍTULO -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Hospedajes</h2>
+        <p>En nuestro hotel, ofrecemos una experiencia única y confortable con una gama diversa de habitaciones diseñadas para satisfacer todas tus necesidades. Desde elegantes suites con vistas panorámicas hasta acogedoras habitaciones familiares, cada espacio está meticulosamente preparado para asegurar tu comodidad y bienestar. Disfruta de nuestras instalaciones modernas, desde el elegante spa hasta el gimnasio completamente equipado, y deja que nuestro personal atento y profesional se encargue de cada detalle. Descubre el lugar perfecto para relajarte y crear recuerdos inolvidables en un entorno que combina lujo y hospitalidad excepcional.</p>
+      </div><!-- FIN TÍTULO -->      
+      <div class="container">
+        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+          <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+            <li data-filter="*" class="filter-active">Todo</li>
+            <!-- Filtración por tipos si fuera necesario -->
+          </ul>
+          <!-- Recorremos habitaciones -->
+          <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+            {% for habitacion in habitaciones %}
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item">
+              <div class="portfolio-content h-100">
+                {% if habitacion.imagenes.exists %}
+                <div id="carouselHospedaje{{ habitacion.id }}" class="carousel slide" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                    {% for imagen in habitacion.imagenes.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                      <img src="{{ imagen.imagen.url }}" alt="Imagen de {{ habitacion.num_hab }}" class="d-block w-100" style="max-height: 250px; object-fit: cover;">
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% else %}
+                <p class="mt-2">No hay imágenes disponibles.</p>
+                {% endif %}
+                <div class="portfolio-info">
+                  <h4>{{ habitacion.tipo_hab }} - Val. noche: ${{ habitacion.precio_noche }}</h4>
+                  <p>{{ habitacion.descripcion }}</p>
+                  <a href="{% url 'habitacion_detalle' habitacion.habitacion_id %}" title="Más detalles" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p>No hay habitaciones disponibles.</p>
+            {% endfor %}
+          </div><!-- Fin Recorrer habitaciones -->
+        </div>
+      </div>
+    </section><!-- /Hospedajes disponibles -->
+  </main>
+</body>
+</html>
+
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <h3>Cancelar Reserva</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p>¿Estás seguro de que deseas cancelar la reserva?</p>
+                    <p><strong>Habitación:</strong> {{ reserva.habitacion.num_hab }} ({{ reserva.habitacion.tipo_hab }})</p>
+                    <p><strong>Fecha de Entrada:</strong> {{ reserva.fecha_entrada|date:"d M Y" }}</p>
+                    <p><strong>Fecha de Salida:</strong> {{ reserva.fecha_salida|date:"d M Y" }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
+                        <a href="{% url 'my_room' %}" class="btn btn-secondary">Volver</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

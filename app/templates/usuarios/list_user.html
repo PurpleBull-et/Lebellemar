@@ -1,0 +1,66 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+{% load crispy_forms_tags %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <h2 class="text-center mb-4">Usuarios Registrados</h2>
+            <h5 class="text-center mb-4">Módulo de Gestión de Usuarios Registrados</h5>
+            <p class="text-center mb-4">Consulte información de usuarios; <span class="typed" data-typed-items="id, tipo de usuario, nombre de usuario, fecha de registro."></span></p>          
+            <section>
+                <div class="row">
+                    {% for usuario in usuarios %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-3">Usuario ID: {{ usuario.id }}</h5>
+                                <p class="card-text">
+                                    <strong>Username:</strong> {{ usuario.username }}<br>
+                                    <strong>First Name:</strong> {{ usuario.first_name }}<br>
+                                    <strong>Last Name:</strong> {{ usuario.last_name }}<br>
+                                    <strong>Email:</strong> {{ usuario.email }}<br>
+                                    <strong>Last Login:</strong> {{ usuario.last_login }}<br>
+                                    <strong>Is Superuser:</strong> {{ usuario.is_superuser }}<br>
+                                    <strong>Is Staff:</strong> {{ usuario.is_staff }}<br>
+                                    <strong>Is Active:</strong> {{ usuario.is_active }}<br>
+                                    <strong>Date Joined:</strong> {{ usuario.date_joined }}
+                                </p>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a href="{% url 'mod_user' usuario.id %}" class="btn btn-primary">Modificar</a>
+                                {% if not usuario.is_superuser %}
+                                <form id="deleteForm-{{ usuario.id }}" action="{% url 'erase_user' usuario.id %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ usuario.id }}')">Eliminar</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>          
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDelete(userId) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción. El usuario será eliminado permanentemente.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById('deleteForm-' + userId).submit();
+      }
+    });
+  }
+</script>
+{% endblock %}

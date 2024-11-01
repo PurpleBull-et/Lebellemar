@@ -1,0 +1,58 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h2 class="text-center mb-4">Mis Solicitudes</h2>
+            {% if solicitudes %}
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Asunto</th>
+                        <th>Mensaje</th>
+                        <th>Correo de Contacto</th>
+                        <th>Fecha de Creación</th>
+                        <th>Estado</th>
+                        <th>Respuesta</th> 
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for solicitud in solicitudes %}
+                    <tr>
+                        <td>{{ solicitud.solicitud_id }}</td>
+                        <td>{{ solicitud.asunto }}</td>
+                        <td>{{ solicitud.mensaje }}</td>
+                        <td>{{ solicitud.correo_contacto }}</td>
+                        <td>{{ solicitud.fecha_creacion|date:"d M Y H:i" }}</td>
+                        <td>
+                            {% if solicitud.estado %}
+                            <span class="badge bg-success">Abierta</span>
+                            {% else %}
+                            <span class="badge bg-danger">Cerrada</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if solicitud.respuesta %}
+                                <span style="color: blue;">{{ solicitud.respuesta }}</span>
+                            {% else %}
+                                <span style="color: red;">Sin resolución</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'mod_soli' solicitud.solicitud_id %}" class="btn btn-primary btn-sm">
+                                Atender Solicitud
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-center">No tienes solicitudes en este momento.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'app/base.html' %}
+{% block contenido %}
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Modificar Usuario | Hotel Le Belle Mar</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Fuentes y Estilos -->
+    <link rel="stylesheet" href="{% static 'app/css/accounts.css' %}" />
+</head>
+<body>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="wrap d-md-flex">
+                        <!-- Sección de Bienvenida con Imagen de Fondo -->
+                            <section id="" class="text-wrap p-4 p-lg-5 d-flex hero text w-100" data-aos="fade-up" data-aos-delay="100">
+                                <img src="{% static 'app/img/bg_login.jpg'%}" alt="" data-aos="fade-in" class="text w-100">
+                                <div class="container text w-100" data-aos="fade-up" data-aos-delay="100">
+                                    <p>Modifique la información del usuario de manera segura y rápida.</p>
+                                </div>
+                            </section><!-- Fondo y texto -->
+                        <!-- Sección de Modificación de Usuario -->
+                        <div class="login-wrap p-4 p-md-5" data-aos="fade-up" data-aos-delay="100">
+                            <div class="row justify-content-center py-md-5">
+                                <div class="col-lg-9">
+                                    <div class="social-wrap">
+                                        <h2 class="mb-4 text-center">Modificar Usuario</h2>
+                                    </div>
+                                    <form action="" method="post" class="">
+                                        {% csrf_token %}
+                                        <br>
+                                        {{ form | crispy }}
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-success mb-3" value="modificar">Guardar Cambios</button>
+                                            <a href="{% url 'list_user' %}" class="btn btn-secondary mb-3">Cancelar</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fin Sección de Modificación de Usuario -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+{% endblock %}
