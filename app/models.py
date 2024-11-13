@@ -78,3 +78,14 @@ class Solicitud(models.Model):
 
     def __str__(self):
         return f'Solicitud {self.solicitud_id} - {self.usuario.username}'
+    
+
+class Opinion(models.Model):
+    reserva = models.OneToOneField('Reserva', on_delete=models.CASCADE, related_name='opinion')
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
+    calificacion = models.PositiveSmallIntegerField()
+    comentario = models.TextField()
+    fecha_opinion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Opinión de {self.cliente.username} para la Reserva {self.reserva.reserva_id}'

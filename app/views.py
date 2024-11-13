@@ -223,6 +223,26 @@ def cancelar_reserva(request, reserva_id):
     return render(request, 'app/cancelar_reserva.html', {'reserva': reserva})
 
 
+
+@login_required
+def confirmar_entrega(request, reserva_id):
+    reserva = get_object_or_404(Reserva, reserva_id=reserva_id, cliente=request.user)
+    return redirect('opinion_form', reserva_id=reserva_id)
+
+@login_required
+def opinion_form(request, reserva_id):
+    reserva = get_object_or_404(Reserva, reserva_id=reserva_id, cliente=request.user)
+    if request.method == 'POST':
+        calificacion = request.POST.get('calificacion')
+        comentario = request.POST.get('comentario')
+        Opinion.objects.create(
+            reserva=reserva,
+            cliente=request.user,
+            calificacion=calificacion,
+            comentario=comentario
+        )
+        return redirect('my_room')
+    return render(request, 'profile/opinion_form.html', {'reserva': reserva})
 #####################################
 # / / / / / / / / / / / / / / / / / #
 #####################################

@@ -44,6 +44,9 @@ urlpatterns = [
     path('my_room/', my_room, name='my_room'),
     path('my_room_det/<reserva_id>/', my_room_det, name='my_room_det'),
     path('cancelar_reserva/<reserva_id>/', cancelar_reserva, name='cancelar_reserva'),
+    path('confirmar_entrega/<int:reserva_id>/', confirmar_entrega, name='confirmar_entrega'),
+    path('opinion_form/<int:reserva_id>/', opinion_form, name='opinion_form'),
+
 
 ]
 

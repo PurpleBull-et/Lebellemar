@@ -8,7 +8,9 @@
     <title>Detalle de la Reserva | Hotel Le Belle Mar</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Fuentes y Estilos -->
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{% static 'app/css/accounts.css' %}" />
 </head>
 <body>
@@ -55,6 +57,34 @@
                                             <div class="col-sm-8">{{ reserva.total_dias }}</div>
                                         </div>
                                         <div class="row mt-4 text-center">
+                                            <button type="button" class="btn btn-primary mt-4" data-toggle="modal" data-target="#confirmarEntregaModal">
+                                                Confirmar Entrega
+                                            </button>
+                                            <!-- Modal de Confirmación -->
+                                            <div class="modal fade" id="confirmarEntregaModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalLabel">Confirmar Entrega de la Habitación</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            ¿Estás seguro de confirmar la entrega de la habitación?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form method="post" action="{% url 'confirmar_entrega' reserva_id=reserva.reserva_id %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-success">Sí</button>
+                                                            </form>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-4 text-center">
                                             <div class="col-sm-12">
                                                 <a href="{% url 'my_room' %}" class="btn btn-secondary">Volver a mis reservas</a>
                                             </div>
@@ -69,6 +99,11 @@
             </div>
         </div>
     </section>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 {% endblock %}

@@ -35,16 +35,23 @@
                 }
             });
 
-            flatpickr("#fecha_entrada", {
+            const fechaEntradaPicker = flatpickr("#fecha_entrada", {
                 dateFormat: "Y-m-d",
                 disable: fechasDeshabilitadas,
-                minDate: "today"
+                minDate: "today",
+                onChange: function(selectedDates) {
+                    fechaSalidaPicker.set("minDate", selectedDates[0] || "today");
+                    calcularTotal({{ habitacion.precio_noche }});
+                }
             });
 
-            flatpickr("#fecha_salida", {
+            const fechaSalidaPicker = flatpickr("#fecha_salida", {
                 dateFormat: "Y-m-d",
                 disable: fechasDeshabilitadas,
-                minDate: "today"
+                minDate: "today",
+                onChange: function() {
+                    calcularTotal({{ habitacion.precio_noche }});
+                }
             });
         });
 
@@ -67,6 +74,7 @@
                 }
             }
         }
+
     </script>
 
     <style>
