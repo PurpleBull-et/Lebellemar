@@ -56,17 +56,23 @@
                 <li><strong>Descripción</strong>: {{ habitacion.descripcion }}</li>
                 <li><strong>Disponibilidad</strong>: {{ habitacion.disponible }}</li>
               </ul>
+              
+              
 
-              <form method="post">
+              <form method="post" action="{% url 'habitacion_detalle' habitacion_id=habitacion.habitacion_id %}">
                 {% csrf_token %}
-                <!-- Incluir el calendario que gestiona las fechas ocupadas y el cálculo -->
                 {% include 'app/calendar.html' %}
-    
                 <div id="totalAPagar" class="alert alert-info mt-4">
-                  <!-- Aquí se mostrará el total a pagar -->
+                  Total a Pagar: <span id="precioCalculado"></span> CLP
                 </div>
+            
+                <input type="hidden" name="total" id="total"> <!-- Input oculto para enviar el total calculado -->
                 <button type="submit" class="btn btn-success">Proceder al Pago</button>
-              </form>
+            </form>
+        
+
+
+
             </div>
             <div class="portfolio-description" data-aos="fade-up" data-aos-delay="300">
               <h2>Precio por Noche: {{ habitacion.precio_noche }}</h2>

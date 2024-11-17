@@ -187,3 +187,15 @@ class CustomUserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+class OpinionForm(forms.ModelForm):
+    class Meta:
+        model = Opinion
+        fields = ['calificacion', 'comentario']  # Campos que el usuario puede llenar
+        widgets = {
+            'calificacion': forms.NumberInput(attrs={'min': 1, 'max': 10, 'class': 'form-control', 'placeholder': 'Calificación (1-10)'}),
+            'comentario': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Escribe tu comentario aquí...'}),
+        }
+        labels = {
+            'calificacion': 'Calificación',
+            'comentario': 'Comentario',
+        }

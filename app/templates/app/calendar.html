@@ -15,26 +15,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const reservasOcupadas = [
-                {% for reserva in fechas_ocupadas %}
-                {
-                    fecha_entrada: "{{ reserva.fecha_entrada }}",
-                    fecha_salida: "{{ reserva.fecha_salida }}"
-                },
+            // Obtener las fechas ocupadas desde la vista
+            const fechasDeshabilitadas = [
+                {% for fecha in fechas_ocupadas %}
+                    "{{ fecha }}",
                 {% endfor %}
             ];
 
-            const fechasDeshabilitadas = [];
-            reservasOcupadas.forEach(function(reserva) {
-                let fechaActual = new Date(reserva.fecha_entrada);
-                const fechaSalida = new Date(reserva.fecha_salida);
-
-                while (fechaActual <= fechaSalida) {
-                    fechasDeshabilitadas.push(fechaActual.toISOString().split('T')[0]);
-                    fechaActual.setDate(fechaActual.getDate() + 1);
-                }
-            });
-
+            // Configuración de flatpickr para deshabilitar las fechas ocupadas
             const fechaEntradaPicker = flatpickr("#fecha_entrada", {
                 dateFormat: "Y-m-d",
                 disable: fechasDeshabilitadas,
@@ -69,12 +57,15 @@
                 if (diasDiferencia > 0) {
                     const total = diasDiferencia * precioPorNoche;
                     document.getElementById("totalAPagar").innerText = `Total a Pagar: ${total.toLocaleString()} CLP`;
+                    document.getElementById("total").value = total;
+                    document.getElementById("input_fecha_entrada").value = fechaEntrada;
+                    document.getElementById("input_fecha_salida").value = fechaSalida;
                 } else {
                     document.getElementById("totalAPagar").innerText = "La fecha de salida debe ser posterior a la fecha de entrada.";
+                    document.getElementById("total").value = "";
                 }
             }
         }
-
     </script>
 
     <style>
@@ -85,5 +76,4 @@
     </style>
 </div>
 
-  {% endblock %}
-  
+{% endblock %}

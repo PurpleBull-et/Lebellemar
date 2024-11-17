@@ -17,6 +17,7 @@
     <link href="{% static 'app/css/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
     <link href="{% static 'app/css/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
     <link href="{% static 'app/css/main.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'app/css/whatsapp.css' %}">
 </head>
 <body>
     <div id="header" class="header dark-background d-flex flex-column">
@@ -203,4 +204,10 @@ document.getElementById('logoutForm').addEventListener('submit', function(event)
     });
 });
 </script>
+
+<!-- Botón de WhatsApp -->
+<a href="https://wa.me/+56949785796?text=¡Hola!%20Tengo%20algunas%20dudas%20sobre%20los%20servicios%20y%20habitaciones%20del%20Hotel%20Le%20Belle%20Mar.%20¿Podrían%20ayudarme?" class="whatsapp-float" target="_blank">
+  <img src="{% static 'app/img/whatsapp.png' %}" alt="WhatsApp" />
+</a>
+
 </html>

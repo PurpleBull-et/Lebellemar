@@ -81,11 +81,19 @@ class Solicitud(models.Model):
     
 
 class Opinion(models.Model):
-    reserva = models.OneToOneField('Reserva', on_delete=models.CASCADE, related_name='opinion')
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
-    calificacion = models.PositiveSmallIntegerField()
-    comentario = models.TextField()
-    fecha_opinion = models.DateTimeField(auto_now_add=True)
+    habitacion = models.ForeignKey(
+        'Habitacion', 
+        on_delete=models.CASCADE, 
+        related_name='opiniones'
+    )  # Relación con Habitacion
+    cliente = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='opiniones'
+    )  # Relación con el usuario que hace la opinión
+    calificacion = models.PositiveSmallIntegerField()  # Número entre 1 y 10
+    comentario = models.TextField()  # Comentario del cliente
+    fecha_opinion = models.DateTimeField(default=now)  # Fecha de la opinión
 
     def __str__(self):
-        return f'Opinión de {self.cliente.username} para la Reserva {self.reserva.reserva_id}'
+        return f'Opinión de {self.cliente.username} para Habitación {self.habitacion.num_hab}'
