@@ -1,43 +1,37 @@
-
-    <head>
+<head>
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  
+
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    </head>
-  
-  {% block calendar %}
-  <div class="calendar-container">
+</head>
+
+{% block calendar %}
+<div class="calendar-container">
     <h3>Selecciona las Fechas Disponibles</h3>
     <input type="text" id="fecha_entrada" class="form-control" name="fecha_entrada" required onchange="calcularTotal({{ habitacion.precio_noche }})">
     <input type="text" id="fecha_salida" class="form-control" name="fecha_salida" required onchange="calcularTotal({{ habitacion.precio_noche }})">
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Obtener las fechas ocupadas desde la vista
-            const fechasDeshabilitadas = [
+            // Obtener las fechas ocupadas desde el contexto de Django
+            const fechasOcupadas = [
                 {% for fecha in fechas_ocupadas %}
                     "{{ fecha }}",
                 {% endfor %}
             ];
 
-            // Configuración de flatpickr para deshabilitar las fechas ocupadas
+            // Configurar Flatpickr para deshabilitar las fechas ocupadas
             const fechaEntradaPicker = flatpickr("#fecha_entrada", {
                 dateFormat: "Y-m-d",
-                disable: fechasDeshabilitadas,
+                disable: fechasOcupadas,
                 minDate: "today",
                 onChange: function(selectedDates) {
-                    fechaSalidaPicker.set("minDate", selectedDates[0] || "today");
-                    calcularTotal({{ habitacion.precio_noche }});
-                }
-            });
-
-            const fechaSalidaPicker = flatpickr("#fecha_salida", {
-                dateFormat: "Y-m-d",
-                disable: fechasDeshabilitadas,
-                minDate: "today",
-                onChange: function() {
+                    flatpickr("#fecha_salida", {
+                        dateFormat: "Y-m-d",
+                        disable: fechasOcupadas,
+                        minDate: selectedDates[0], // Fecha mínima para salida es la seleccionada como entrada
+                    });
                     calcularTotal({{ habitacion.precio_noche }});
                 }
             });
@@ -58,8 +52,6 @@
                     const total = diasDiferencia * precioPorNoche;
                     document.getElementById("totalAPagar").innerText = `Total a Pagar: ${total.toLocaleString()} CLP`;
                     document.getElementById("total").value = total;
-                    document.getElementById("input_fecha_entrada").value = fechaEntrada;
-                    document.getElementById("input_fecha_salida").value = fechaSalida;
                 } else {
                     document.getElementById("totalAPagar").innerText = "La fecha de salida debe ser posterior a la fecha de entrada.";
                     document.getElementById("total").value = "";
@@ -75,5 +67,4 @@
         }
     </style>
 </div>
-
 {% endblock %}

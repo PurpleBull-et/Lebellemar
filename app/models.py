@@ -49,7 +49,7 @@ class Imagen(models.Model):
 class Reserva(models.Model):
     reserva_id = models.AutoField(primary_key=True)
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
-    habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
+    habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE,related_name='reservas')
     fecha_entrada = models.DateField()
     fecha_salida = models.DateField()
     precio_final = models.DecimalField(max_digits=10, decimal_places=2)

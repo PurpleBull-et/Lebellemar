@@ -189,6 +189,15 @@ def habitacion_detalle(request, habitacion_id):
     habitacion = get_object_or_404(Habitacion, habitacion_id=habitacion_id)
     precio_final = None
 
+    # Obtener las fechas ocupadas de la habitación
+    reservas = habitacion.reservas.all()  # Asegúrate de que la relación está definida en el modelo
+    fechas_ocupadas = []
+    for reserva in reservas:
+        fecha_actual = reserva.fecha_entrada
+        while fecha_actual <= reserva.fecha_salida:
+            fechas_ocupadas.append(fecha_actual.strftime('%Y-%m-%d'))
+            fecha_actual += timedelta(days=1)
+
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
@@ -218,6 +227,7 @@ def habitacion_detalle(request, habitacion_id):
         'habitacion': habitacion,
         'form': form,
         'precio_final': precio_final,
+        'fechas_ocupadas': fechas_ocupadas,  # Agregar las fechas ocupadas al contexto
     })
 
 
