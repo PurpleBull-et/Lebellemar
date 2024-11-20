@@ -423,6 +423,10 @@ def iniciar_pago(request, reserva_id):
     try:
         # Usa el total de la reserva para el monto de la transacción
         amount = float(reserva.precio_final)
+<<<<<<< HEAD
+=======
+
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
         response = transaction.create(
             buy_order=f"orden_{request.user.id}_{reserva_id}",
             session_id=request.session.session_key,
@@ -430,14 +434,21 @@ def iniciar_pago(request, reserva_id):
             return_url=request.build_absolute_uri(reverse("pago_completado"))
         )
 
+<<<<<<< HEAD
         # Guardar reserva_id en la sesión para usar después
         request.session['reserva_id'] = reserva_id
 
+=======
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
         return redirect(response["url"] + "?token_ws=" + response["token"])
 
     except Exception as e:
         return render(request, 'pago/error_pago.html', {'error': str(e), 'reserva': reserva})
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
 
 def pago_completado(request):
     token = request.GET.get("token_ws")  # Token retornado por Transbank
@@ -448,6 +459,7 @@ def pago_completado(request):
         response = transaction.commit(token)
 
         if response['status'] == "AUTHORIZED":
+<<<<<<< HEAD
             # Recuperar reserva asociada al pago
             reserva_id = request.session.get('reserva_id')
             if reserva_id:
@@ -455,10 +467,18 @@ def pago_completado(request):
                 return redirect('opinion_form', reserva_id=reserva_id)
             else:
                 return render(request, 'pago/pago_exitoso.html', {'response': response})
+=======
+            # Manejo de pago exitoso
+            return render(request, 'pago/pago_exitoso.html', {'response': response})
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
         else:
             # Manejo de pago rechazado
             return render(request, 'pago/pago_fallido.html', {'response': response})
 
     except Exception as e:
         # Manejo de errores
+<<<<<<< HEAD
         return render(request, 'pago/error_pago.html', {'error': str(e)})
+=======
+        return render(request, 'pago/error_pago.html', {'error': str(e)})
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156

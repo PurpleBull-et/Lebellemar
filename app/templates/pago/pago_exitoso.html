@@ -4,6 +4,7 @@
 <div class="container text-center mt-5">
     <h1>¡Pago Exitoso!</h1>
     <p>Gracias por tu reserva. Hemos recibido tu pago exitosamente.</p>
+<<<<<<< HEAD
     {% if reserva_id %}
         <a href="{% url 'opinion_form' reserva_id=reserva_id %}" class="btn btn-primary">Dejar Opinión</a>
     {% else %}
@@ -11,3 +12,8 @@
     {% endif %}
 </div>
 {% endblock %}
+=======
+    <a href="{% url 'index' %}" class="btn btn-primary">Volver al Inicio</a>
+</div>
+{% endblock %}
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156

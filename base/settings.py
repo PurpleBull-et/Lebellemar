@@ -82,10 +82,14 @@ WSGI_APPLICATION = 'base.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
+<<<<<<< HEAD
         'NAME': 'dbBelle',
+=======
+        'NAME': 'LEBELLE20',
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
         'USER': 'sa',
-        'PASSWORD': 'qweqweqwe123123',
-        'HOST': 'AlanPC\SQLEXPRESS',
+        'PASSWORD': '123',
+        'HOST': 'LAPTOP-F67B81PU\SQLEXPRESS',
         'PORT': '',
 
         'OPTIONS': {
@@ -95,6 +99,10 @@ DATABASES = {
     }
 }
 
+# Configuración de Transbank para ambiente de pruebas
+TRANSBANK_API_KEY = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
+TRANSBANK_COMMERCE_CODE = '597055555532'
+TRANSBANK_ENV = 'integration'  # Cambia a 'production' en producción
 
 
 
@@ -148,13 +156,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CONFIG CORREO
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Configuracion modulo recuperación de contraseña
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lebellemar@gmail.com'
-EMAIL_HOST_PASSWORD = 'ukzi ohud jaml wyxf'  
+EMAIL_HOST_PASSWORD = 'tjmg hjrx cawn djut'  
 
 LOGIN_REDIRECT_URL = 'index' 
 LOGOUT_REDIRECT_URL = '/'  

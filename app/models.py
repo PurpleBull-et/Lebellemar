@@ -85,21 +85,32 @@ class Opinion(models.Model):
         'Habitacion', 
         on_delete=models.CASCADE, 
         related_name='opiniones'
+<<<<<<< HEAD
     )
+=======
+    )  # Relación con Habitacion
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
     cliente = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
         related_name='opiniones'
+<<<<<<< HEAD
     )
     reserva = models.ForeignKey(
         'Reserva', 
         on_delete=models.CASCADE, 
         related_name='opiniones'
     )  # Vincular con la reserva
+=======
+    )  # Relación con el usuario que hace la opinión
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
     calificacion = models.PositiveSmallIntegerField()  # Número entre 1 y 10
     comentario = models.TextField()  # Comentario del cliente
     fecha_opinion = models.DateTimeField(default=now)  # Fecha de la opinión
 
     def __str__(self):
         return f'Opinión de {self.cliente.username} para Habitación {self.habitacion.num_hab}'
+<<<<<<< HEAD
 
+=======
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156

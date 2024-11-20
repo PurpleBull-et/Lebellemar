@@ -46,7 +46,12 @@ urlpatterns = [
     path('my_room_det/<reserva_id>/', my_room_det, name='my_room_det'),
     path('cancelar_reserva/<reserva_id>/', cancelar_reserva, name='cancelar_reserva'),
     path('confirmar_entrega/<int:reserva_id>/', confirmar_entrega, name='confirmar_entrega'),
+<<<<<<< HEAD
     path('opinion/<int:reserva_id>/', opinion_form, name='opinion_form'),
+=======
+    path('opinion_form/<int:reserva_id>/', opinion_form, name='opinion_form'),
+    path('habitacion_detalle/<int:habitacion_id>/', habitacion_detalle, name='habitacion_detalle'),
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
     path('pago/iniciar/<int:reserva_id>/', iniciar_pago, name='iniciar_pago'),
     path('pago/completado/', pago_completado, name='pago_completado'),
 

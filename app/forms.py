@@ -190,7 +190,11 @@ class CustomUserCreationForm(forms.ModelForm):
 class OpinionForm(forms.ModelForm):
     class Meta:
         model = Opinion
+<<<<<<< HEAD
         fields = ['calificacion', 'comentario']
+=======
+        fields = ['calificacion', 'comentario']  # Campos que el usuario puede llenar
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
         widgets = {
             'calificacion': forms.NumberInput(attrs={'min': 1, 'max': 10, 'class': 'form-control', 'placeholder': 'Calificación (1-10)'}),
             'comentario': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Escribe tu comentario aquí...'}),
@@ -198,4 +202,8 @@ class OpinionForm(forms.ModelForm):
         labels = {
             'calificacion': 'Calificación',
             'comentario': 'Comentario',
+<<<<<<< HEAD
         }
+=======
+        }
+>>>>>>> de742dab9ae874dd6e7cf00ed1d4e235facbd156
