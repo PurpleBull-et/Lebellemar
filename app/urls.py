@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import *
 from django.contrib.auth import views as auth_views
 from django.conf import settings
@@ -14,6 +14,7 @@ urlpatterns = [
     path('accounts/login/', login, name='login'),
     path('accounts/logout/', logoutView, name='logout'),
     # reseteo contraseña
+    path('accounts/', include('django.contrib.auth.urls')),
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
@@ -45,7 +46,9 @@ urlpatterns = [
     path('my_room_det/<reserva_id>/', my_room_det, name='my_room_det'),
     path('cancelar_reserva/<reserva_id>/', cancelar_reserva, name='cancelar_reserva'),
     path('confirmar_entrega/<int:reserva_id>/', confirmar_entrega, name='confirmar_entrega'),
-    path('opinion_form/<int:reserva_id>/', opinion_form, name='opinion_form'),
+    path('opinion/<int:reserva_id>/', opinion_form, name='opinion_form'),
+    path('pago/iniciar/<int:reserva_id>/', iniciar_pago, name='iniciar_pago'),
+    path('pago/completado/', pago_completado, name='pago_completado'),
 
 
 ]

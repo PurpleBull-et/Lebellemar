@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'base.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': 'ddbb_bellemar',
+        'NAME': 'dbBelle',
         'USER': 'sa',
         'PASSWORD': 'qweqweqwe123123',
         'HOST': 'AlanPC\SQLEXPRESS',

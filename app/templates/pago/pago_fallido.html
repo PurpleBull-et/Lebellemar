@@ -1,0 +1,9 @@
+{% extends 'app/base.html' %}
+
+{% block contenido %}
+<div class="container text-center mt-5">
+    <h1>Pago Rechazado</h1>
+    <p>Lo sentimos, tu pago no pudo ser procesado. Por favor, inténtalo nuevamente.</p>
+    <a href="{% url 'habitacion_detalle' habitacion_id=habitacion.habitacion_id %}" class="btn btn-warning">Volver a la Habitación</a>
+</div>
+{% endblock %}

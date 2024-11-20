@@ -49,7 +49,7 @@ class Imagen(models.Model):
 class Reserva(models.Model):
     reserva_id = models.AutoField(primary_key=True)
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
-    habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
+    habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE,related_name='reservas')
     fecha_entrada = models.DateField()
     fecha_salida = models.DateField()
     precio_final = models.DecimalField(max_digits=10, decimal_places=2)
@@ -81,11 +81,25 @@ class Solicitud(models.Model):
     
 
 class Opinion(models.Model):
-    reserva = models.OneToOneField('Reserva', on_delete=models.CASCADE, related_name='opinion')
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE)
-    calificacion = models.PositiveSmallIntegerField()
-    comentario = models.TextField()
-    fecha_opinion = models.DateTimeField(auto_now_add=True)
+    habitacion = models.ForeignKey(
+        'Habitacion', 
+        on_delete=models.CASCADE, 
+        related_name='opiniones'
+    )
+    cliente = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='opiniones'
+    )
+    reserva = models.ForeignKey(
+        'Reserva', 
+        on_delete=models.CASCADE, 
+        related_name='opiniones'
+    )  # Vincular con la reserva
+    calificacion = models.PositiveSmallIntegerField()  # Número entre 1 y 10
+    comentario = models.TextField()  # Comentario del cliente
+    fecha_opinion = models.DateTimeField(default=now)  # Fecha de la opinión
 
     def __str__(self):
-        return f'Opinión de {self.cliente.username} para la Reserva {self.reserva.reserva_id}'
+        return f'Opinión de {self.cliente.username} para Habitación {self.habitacion.num_hab}'
+

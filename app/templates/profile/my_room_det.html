@@ -75,6 +75,7 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <form method="post" action="{% url 'confirmar_entrega' reserva_id=reserva.reserva_id %}">
+
                                                                 {% csrf_token %}
                                                                 <button type="submit" class="btn btn-success">Sí</button>
                                                             </form>

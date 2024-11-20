@@ -6,6 +6,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.forms import UserChangeForm
+from transbank.webpay.webpay_plus.transaction import Transaction
+from django.urls import reverse
+from django.conf import settings
+from django.utils import timezone
+from datetime import datetime, timedelta
+
+
 
 
 def index(request):
@@ -180,38 +187,48 @@ def get_reservas_habitacion(request, habitacion_id):
 @login_required
 def habitacion_detalle(request, habitacion_id):
     habitacion = get_object_or_404(Habitacion, habitacion_id=habitacion_id)
+    precio_final = None
 
-    # Obtener todas las reservas para la habitación
-    reservas = Reserva.objects.filter(habitacion=habitacion)
-
-    # Obtener las fechas ocupadas en formato 'YYYY-MM-DD'
-    fechas_ocupadas = [
-        {
-            'fecha_entrada': reserva.fecha_entrada.strftime('%Y-%m-%d'),
-            'fecha_salida': reserva.fecha_salida.strftime('%Y-%m-%d')
-        }
-        for reserva in reservas
-    ]
+    # Obtener las fechas ocupadas de la habitación
+    reservas = habitacion.reservas.all()  # Asegúrate de que la relación está definida en el modelo
+    fechas_ocupadas = []
+    for reserva in reservas:
+        fecha_actual = reserva.fecha_entrada
+        while fecha_actual <= reserva.fecha_salida:
+            fechas_ocupadas.append(fecha_actual.strftime('%Y-%m-%d'))
+            fecha_actual += timedelta(days=1)
 
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
+            # Crear y guardar la reserva en la base de datos
             reserva = form.save(commit=False)
             reserva.cliente = request.user
             reserva.habitacion = habitacion
-            total_dias = (reserva.fecha_salida - reserva.fecha_entrada).days
-            reserva.precio_final = total_dias * habitacion.precio_noche
+            fecha_entrada_str = request.POST.get("fecha_entrada")
+            fecha_salida_str = request.POST.get("fecha_salida")
+            
+            # Convertir las fechas de string a datetime
+            fecha_entrada = datetime.strptime(fecha_entrada_str, "%Y-%m-%d")
+            fecha_salida = datetime.strptime(fecha_salida_str, "%Y-%m-%d")
+            
+            reserva.fecha_entrada = fecha_entrada
+            reserva.fecha_salida = fecha_salida
+            reserva.total_dias = (fecha_salida - fecha_entrada).days
+            reserva.precio_final = reserva.total_dias * habitacion.precio_noche
             reserva.save()
-            return redirect('my_room')
+
+            # Redirigir a la vista de iniciar el pago con el ID de la reserva
+            return redirect('iniciar_pago', reserva_id=reserva.reserva_id)
     else:
         form = ReservaForm()
 
     return render(request, 'app/habitacion_detalle.html', {
         'habitacion': habitacion,
         'form': form,
-        'fechas_ocupadas': fechas_ocupadas  # Pasar las fechas ocupadas al template
+        'precio_final': precio_final,
+        'fechas_ocupadas': fechas_ocupadas,  # Agregar las fechas ocupadas al contexto
     })
-
 
 
 @login_required
@@ -233,16 +250,18 @@ def confirmar_entrega(request, reserva_id):
 def opinion_form(request, reserva_id):
     reserva = get_object_or_404(Reserva, reserva_id=reserva_id, cliente=request.user)
     if request.method == 'POST':
-        calificacion = request.POST.get('calificacion')
-        comentario = request.POST.get('comentario')
-        Opinion.objects.create(
-            reserva=reserva,
-            cliente=request.user,
-            calificacion=calificacion,
-            comentario=comentario
-        )
-        return redirect('my_room')
-    return render(request, 'profile/opinion_form.html', {'reserva': reserva})
+        form = OpinionForm(request.POST)
+        if form.is_valid():
+            opinion = form.save(commit=False)
+            opinion.habitacion = reserva.habitacion
+            opinion.cliente = request.user
+            opinion.reserva = reserva
+            opinion.save()
+            return redirect('habitacion_detalle', habitacion_id=reserva.habitacion.habitacion_id)
+    else:
+        form = OpinionForm()
+    return render(request, 'profile/opinion_form.html', {'form': form, 'reserva': reserva})
+
 #####################################
 # / / / / / / / / / / / / / / / / / #
 #####################################
@@ -396,3 +415,50 @@ def my_room(request):
 def my_room_det(request, reserva_id):
     reserva = get_object_or_404(Reserva, reserva_id=reserva_id, cliente=request.user)
     return render(request, 'profile/my_room_det.html', {'reserva': reserva})
+
+def iniciar_pago(request, reserva_id):
+    reserva = get_object_or_404(Reserva, reserva_id=reserva_id)
+    transaction = Transaction()
+
+    try:
+        # Usa el total de la reserva para el monto de la transacción
+        amount = float(reserva.precio_final)
+        response = transaction.create(
+            buy_order=f"orden_{request.user.id}_{reserva_id}",
+            session_id=request.session.session_key,
+            amount=amount,
+            return_url=request.build_absolute_uri(reverse("pago_completado"))
+        )
+
+        # Guardar reserva_id en la sesión para usar después
+        request.session['reserva_id'] = reserva_id
+
+        return redirect(response["url"] + "?token_ws=" + response["token"])
+
+    except Exception as e:
+        return render(request, 'pago/error_pago.html', {'error': str(e), 'reserva': reserva})
+
+
+def pago_completado(request):
+    token = request.GET.get("token_ws")  # Token retornado por Transbank
+    transaction = Transaction()
+
+    try:
+        # Confirma la transacción con Transbank
+        response = transaction.commit(token)
+
+        if response['status'] == "AUTHORIZED":
+            # Recuperar reserva asociada al pago
+            reserva_id = request.session.get('reserva_id')
+            if reserva_id:
+                # Redirigir directamente al formulario de opinión
+                return redirect('opinion_form', reserva_id=reserva_id)
+            else:
+                return render(request, 'pago/pago_exitoso.html', {'response': response})
+        else:
+            # Manejo de pago rechazado
+            return render(request, 'pago/pago_fallido.html', {'response': response})
+
+    except Exception as e:
+        # Manejo de errores
+        return render(request, 'pago/error_pago.html', {'error': str(e)})
