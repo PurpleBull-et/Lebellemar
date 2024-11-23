@@ -75,8 +75,8 @@
 
             </div>
             <div class="portfolio-description" data-aos="fade-up" data-aos-delay="300">
-              <h2>Precio por Noche: {{ habitacion.precio_noche }}</h2>
-              <p>El precio por noche para la habitación {{ habitacion.num_hab }} es {{ habitacion.precio_noche }}. Aprovecha nuestra oferta especial y reserva tu estancia ahora para disfrutar de una experiencia inolvidable en nuestro hotel.</p>
+              <h2>Precio por Noche: {{ habitacion.precio_noche | clp }}</h2>
+              <p>El precio por noche para la habitación {{ habitacion.num_hab }} es {{ habitacion.precio_noche | clp}}. Aprovecha nuestra oferta especial y reserva tu estancia ahora para disfrutar de una experiencia inolvidable en nuestro hotel.</p>
             </div>
           </div>
         </div>

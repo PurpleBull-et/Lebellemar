@@ -47,7 +47,7 @@
                                             <td>{{ reserva.habitacion.num_hab }} ({{ reserva.habitacion.tipo_hab }})</td>
                                             <td>{{ reserva.fecha_entrada|date:"d M Y" }}</td>
                                             <td>{{ reserva.fecha_salida|date:"d M Y" }}</td>
-                                            <td>{{ reserva.precio_final|floatformat:2 }}</td>
+                                            <td>{{ reserva.precio_final|clp }}</td>
                                             <td>
                                                 <a href="{% url 'my_room_det' reserva.reserva_id %}" class="btn btn-info btn-sm">Ver Detalles</a>
                                                 <form method="post" action="{% url 'cancelar_reserva' reserva.reserva_id %}" style="display:inline;">

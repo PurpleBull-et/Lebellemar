@@ -1,0 +1,136 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{{ request.build_absolute_uri }}{% static 'app/css/main.css' %}">
+
+
+{% block contenido %}
+<div class="container mt-4">
+    <div class="reporte-container bg-white p-4 rounded shadow-sm">
+        <h2 class="text-primary">Reporte del Sistema</h2>
+        <hr>
+
+        <!-- Métricas Generales -->
+        <div>
+            <h3>Métricas Generales</h3>
+            <table class="table table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total de Clientes</td>
+                        <td>{{ total_clientes }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total de Reservas</td>
+                        <td>{{ total_reservas }}</td>
+                    </tr>
+                    <tr>
+                        <td>Ingresos Totales</td>
+                        <td>{{ ingresos_totales|clp }} CLP</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Reservas por Tipo de Habitación -->
+        <div class="mt-4">
+            <h3>Reservas por Tipo de Habitación</h3>
+            <ul class="list-group">
+                {% for tipo in reservas_por_tipo %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ tipo.habitacion__tipo_hab }}
+                    <span class="badge bg-primary rounded-pill">{{ tipo.total }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Duración Promedio de las Reservas -->
+        <div class="mt-4">
+            <h3>Duración Promedio de las Reservas</h3>
+            <p>{{ duracion_promedio_reservas|floatformat:1}} días</p>
+        </div>
+
+        <!-- Habitaciones Menos Reservadas -->
+        <div class="mt-4">
+            <h3>Habitaciones Menos Reservadas</h3>
+            <ul class="list-group">
+                {% for hab in habitaciones_menos_reservadas %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ hab.habitacion__nombre }}
+                    <span class="badge bg-danger rounded-pill">{{ hab.total }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Ingresos Totales por Mes -->
+        <div class="mt-4">
+            <h3>Ingresos Totales por Mes</h3>
+            <table class="table table-striped table-bordered">
+                <thead class="table-success">
+                    <tr>
+                        <th>Mes</th>
+                        <th>Ingresos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mes in ingresos_por_mes|clp %}
+                    <tr>
+                        <td>{{ mes.mes_nombre }}</td>
+                        <td>{{ mes.total_ingresos|clp }} CLP</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Habitaciones Mejor Calificadas -->
+        <div class="mt-4">
+            <h3>Habitaciones Mejor Calificadas</h3>
+            <ul class="list-group">
+                {% for hab in habitaciones_mejor_calificadas %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ hab.habitacion__nombre }}
+                    <span class="badge bg-success rounded-pill">{{ hab.promedio_calificacion|floatformat:1 }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <!-- Gráfico de Barras -->
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="width: 100%; max-width: 500px; height: 400px;">
+                <h3>Ingresos Totales por Mes</h3>
+                <img src="data:image/png;base64,{{ grafico_barras }}" alt="Gráfico de Ingresos por Mes" style="max-width: 100%; height: auto;">
+            </div>
+        </div>
+        <!-- Gráfico Circular -->
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="width: 100%; max-width: 500px; height: 400px;">
+                <h3>Reservas por Tipo de Habitación</h3>
+                <img src="data:image/png;base64,{{ grafico_circular }}" alt="Gráfico de Reservas por Tipo de Habitación" style="max-width: 100%; height: auto;">
+            </div>
+        </div>
+    </div>
+     <!-- Añadir el botón para generar PDF -->
+     <div class="text-end mb-3">
+        <a href="{% url 'generar_pdf_reporte' %}" class="btn btn-danger">
+            <i class="fas fa-file-pdf"></i> Descargar PDF
+        </a>
+    </div>
+<br>
+<br>
+<br>
+<br>
+
+</div>
+
+
+{% endblock contenido %}

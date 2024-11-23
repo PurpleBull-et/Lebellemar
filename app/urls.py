@@ -50,6 +50,9 @@ urlpatterns = [
     path('habitacion_detalle/<int:habitacion_id>/', habitacion_detalle, name='habitacion_detalle'),
     path('pago/iniciar/<int:reserva_id>/', iniciar_pago, name='iniciar_pago'),
     path('pago/completado/', pago_completado, name='pago_completado'),
+    # reportes 
+    path('reporte/', mostrar_reporte, name='reporte'),
+    path('reporte/pdf/', generar_reporte, name='generar_pdf_reporte'),
 
 
 ]

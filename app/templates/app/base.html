@@ -54,6 +54,7 @@
                 <li><a href="{% url 'add_room' %}"><i class="bi bi-house-add"></i> Registrar habitaciones</a></li>
                 <li><a href="{% url 'list_soli' %}"><i class="bi bi-envelope-open"></i> Listar solicitudes</a></li>
                 <li><a href="{% url 'login' %}"><i class="bi bi-file-earmark-person-fill"></i> Administración</a></li>
+                <li><a href="{% url 'reporte' %}"><i class="bi bi-clipboard2-data"></i> Reportes</a></li>
               </ul>
             </li>            
             {% endif %}
@@ -103,14 +104,14 @@
 </body>
 
 <footer id="footer" class="footer position-relative light-background">
-    <div class="container">
-      <div class="copyright text-center ">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">Le Belle Mar</strong> <span>Todos los derechos reservados</span></p>
+  <div class="container">
+      <div class="copyright text-center">
+          <p>© <span>Copyright</span> <strong class="px-1 sitename">Le Belle Mar</strong> <span>Todos los derechos reservados</span></p>
       </div>
       <div class="credits">
-        Designed by <a href="">Alan Zamorano & Matías Riquelme</a>
+          Designed by <a href="">Alan Zamorano & Matías Riquelme</a>
       </div>
-    </div>
+  </div>
 </footer>
 <!--MODAL-->
 <section>
@@ -204,7 +205,7 @@ document.getElementById('logoutForm').addEventListener('submit', function(event)
     });
 });
 </script>
-
+  
 <!-- Botón de WhatsApp -->
 <a href="https://wa.me/+56949785796?text=¡Hola!%20Tengo%20algunas%20dudas%20sobre%20los%20servicios%20y%20habitaciones%20del%20Hotel%20Le%20Belle%20Mar.%20¿Podrían%20ayudarme?" class="whatsapp-float" target="_blank">
   <img src="{% static 'app/img/whatsapp.png' %}" alt="WhatsApp" />

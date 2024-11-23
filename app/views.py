@@ -1,3 +1,9 @@
+import base64
+from io import BytesIO
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from .forms import *
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login, logout
@@ -11,7 +17,27 @@ from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime, timedelta
-
+from django.shortcuts import render
+from django.db.models import Count, Sum, Avg
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.db.models.functions import ExtractMonth
+import calendar, locale
+from django.http import HttpResponse
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+import os
+import tempfile
+from xhtml2pdf import pisa
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from PIL import Image
+import time
+from django.template.defaultfilters import register
+from weasyprint import HTML
 
 
 
@@ -69,7 +95,7 @@ def login(request):
 @require_POST
 def logoutView(request):
     logout(request)
-    return render(request, 'app/index.html')
+    return redirect('index')
 #####################################
 # / / / / / / / / / / / / / / / / / #
 #####################################
@@ -453,3 +479,145 @@ def pago_completado(request):
     except Exception as e:
         # Manejo de errores
         return render(request, 'pago/error_pago.html', {'error': str(e)})
+    
+    
+
+def generar_contexto_reporte():
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+
+    # Métricas existentes
+    total_clientes = User.objects.count()
+    total_reservas = Reserva.objects.count()
+    ingresos_totales = Reserva.objects.aggregate(Sum('precio_final'))['precio_final__sum'] or 0
+
+    habitaciones_mas_reservadas = (
+        Reserva.objects.values('habitacion__nombre')
+        .annotate(total=Count('reserva_id'))
+        .order_by('-total')[:5]
+    )
+
+    reservas_por_mes = (
+        Reserva.objects.annotate(mes=ExtractMonth('fecha_entrada'))
+        .values('mes')
+        .annotate(total=Count('reserva_id'))
+        .order_by('mes')
+    )
+
+    # Nuevas métricas
+    reservas_por_tipo = (
+        Reserva.objects.values('habitacion__tipo_hab')
+        .annotate(total=Count('reserva_id'))
+        .order_by('-total')
+    )
+
+    duracion_promedio_reservas = (
+        Reserva.objects.aggregate(promedio=Avg('total_dias'))['promedio'] or 0
+    )
+
+    habitaciones_menos_reservadas = (
+        Reserva.objects.values('habitacion__nombre')
+        .annotate(total=Count('reserva_id'))
+        .order_by('total')[:1]
+    )
+
+    ingresos_por_mes = (
+        Reserva.objects.annotate(mes=ExtractMonth('fecha_entrada'))
+        .values('mes')
+        .annotate(total_ingresos=Sum('precio_final'))
+        .order_by('mes')
+    )
+
+    for ingreso in ingresos_por_mes:
+        ingreso['mes_nombre'] = calendar.month_name[ingreso['mes']].capitalize()
+
+    habitaciones_mejor_calificadas = (
+        Opinion.objects.values('habitacion__nombre')
+        .annotate(promedio_calificacion=Avg('calificacion'))
+        .order_by('-promedio_calificacion')[:5]
+    )
+
+    # Generar gráficos con Matplotlib
+    # Gráfico de Barras: Ingresos Totales por Mes
+    meses = [calendar.month_name[ingreso['mes']] for ingreso in ingresos_por_mes]
+    ingresos = [ingreso['total_ingresos'] for ingreso in ingresos_por_mes]
+
+    fig1, ax1 = plt.subplots()
+    ax1.bar(meses, ingresos, color="skyblue")
+    ax1.set_title("Ingresos Totales por Mes")
+    ax1.set_ylabel("Ingresos (CLP)")
+    ax1.set_xlabel("Mes")
+    plt.xticks(rotation=45, ha="right")
+
+    buffer1 = BytesIO()
+    plt.tight_layout()
+    plt.savefig(buffer1, format="png")
+    buffer1.seek(0)
+    grafico_barras = base64.b64encode(buffer1.getvalue()).decode("utf-8")
+    buffer1.close()
+    plt.close(fig1)
+
+    # Gráfico Circular: Reservas por Tipo de Habitación
+    tipos_habitacion = [tipo["habitacion__tipo_hab"] for tipo in reservas_por_tipo]
+    reservas = [tipo["total"] for tipo in reservas_por_tipo]
+
+    fig2, ax2 = plt.subplots()
+    ax2.pie(
+        reservas,
+        labels=tipos_habitacion,
+        autopct="%1.1f%%",
+        startangle=90,
+        colors=plt.cm.Paired.colors,
+    )
+    ax2.set_title("Reservas por Tipo de Habitación")
+
+    buffer2 = BytesIO()
+    plt.tight_layout()
+    plt.savefig(buffer2, format="png")
+    buffer2.seek(0)
+    grafico_circular = base64.b64encode(buffer2.getvalue()).decode("utf-8")
+    buffer2.close()
+    plt.close(fig2)
+
+    context = {
+        # Métricas existentes
+        'total_clientes': total_clientes,
+        'total_reservas': total_reservas,
+        'ingresos_totales': ingresos_totales,
+        'habitaciones_mas_reservadas': habitaciones_mas_reservadas,
+        'reservas_por_mes': reservas_por_mes,
+
+        # Nuevas métricas
+        'reservas_por_tipo': reservas_por_tipo,
+        'duracion_promedio_reservas': duracion_promedio_reservas,
+        'habitaciones_menos_reservadas': habitaciones_menos_reservadas,
+        'ingresos_por_mes': ingresos_por_mes,
+        'habitaciones_mejor_calificadas': habitaciones_mejor_calificadas,
+
+        # Gráficos
+        'grafico_barras': grafico_barras,
+        'grafico_circular': grafico_circular,
+    }
+
+    return context
+
+@login_required
+def mostrar_reporte(request):
+    context = generar_contexto_reporte()
+    return render(request, 'app/reporte.html', context)
+
+@login_required
+def generar_reporte(request):
+    context = generar_contexto_reporte()
+
+    # Renderizar el template HTML a string
+    html_string = render_to_string('app/reporte.html', context)
+
+    # Convertir HTML a PDF usando WeasyPrint
+    html = HTML(string=html_string)
+    pdf = html.write_pdf()
+
+    # Enviar el archivo PDF como respuesta
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte.pdf"'
+
+    return response

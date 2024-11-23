@@ -48,7 +48,7 @@
                 <p class="mt-2">No hay imágenes disponibles.</p>
                 {% endif %}
                 <div class="portfolio-info">
-                  <h4>{{ habitacion.tipo_hab }} - Val. noche: ${{ habitacion.precio_noche }}</h4>
+                  <h4>{{ habitacion.tipo_hab }} - Val. noche: {{ habitacion.precio_noche|clp }}</h4>
                   <p>{{ habitacion.descripcion }}</p>
                   <a href="{% url 'habitacion_detalle' habitacion.habitacion_id %}" title="Más detalles" class="details-link"><i class="bi bi-link-45deg"></i></a>
                 </div>
